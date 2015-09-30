@@ -11,6 +11,8 @@ public class DataTable {
 	public static final int FORMAT_CSV = 0;
 	public static final int FORMAT_HTML = 1;
 
+	private Interface export;
+	
 	private LinkedHashMap<String, Integer> columnsTypes = new LinkedHashMap<String, Integer>();
 	private ArrayList<DataTableRow> rows = new ArrayList<DataTableRow>();
 
@@ -72,51 +74,11 @@ public class DataTable {
 	}
 
 	public String export(int format) {
-		DataTableRow row;
-		String saida = "";
-		if (format == DataTable.FORMAT_CSV) {
-			for (String collumnName : columnsTypes.keySet()) {
-				saida += collumnName + ";";
-			}
-			saida += "\n";
-			for (int i = 0; i < this.rowsCount(); i++) {
-				row = this.getRow(i);
-				for (String collumnName : columnsTypes.keySet()) {
-					if (columnsTypes.get(collumnName) == DataTable.TYPE_STRING) {
-						saida += "\"" + row.getValue(collumnName) + "\";";
-					} else {
-						saida += row.getValue(collumnName) + ";";
-					}
-				}
-				saida += "\n";
-			}
-			/*
-			 * String expectedHtml = "<table>\n"; expectedHtml +=
-			 * "<tr><td>id</td><td>name</td></tr>\n"; expectedHtml +=
-			 * "<tr><td>0</td><td>row0</td></tr>\n"; expectedHtml +=
-			 * "<tr><td>1</td><td>row1</td></tr>\n"; expectedHtml +=
-			 * "<tr><td>2</td><td>row2</td></tr>\n"; expectedHtml +=
-			 * "</table>\n";
-			 */
-
-		} else if (format == DataTable.FORMAT_HTML) {
-			saida += "<table>\n<tr>";
-			for (String collumnName : columnsTypes.keySet()) {
-				saida += "<td>" + collumnName + "</td>";
-			}
-			saida += "</tr>\n";
-			for (int i = 0; i < this.rowsCount(); i++) {
-				row = this.getRow(i);
-				saida += "<tr>";
-				for (String collumnName : columnsTypes.keySet()) {
-					saida += "<td>" + row.getValue(collumnName) + "</td>";
-				}
-				saida += "</tr>\n";
-			}
-			saida += "</table>\n";
-		}
-
-		return saida;
+		if (format == DataTable.FORMAT_CSV)
+			
+		if (format == DataTable.FORMAT_HTML)
+			export = new FormatoHtml();
+		return export.export(this, columnsTypes);
 	}
 
 	public void insertRowAt(DataTableRow row, int index) {
@@ -163,21 +125,23 @@ public class DataTable {
 
 	public DataTable sortAscending(String collumn) {
 		if (columnsTypes.get(collumn) == TYPE_STRING)
-			throw new ClassCastException("Apenas colunas com números inteiros são ordenados.");
+			throw new ClassCastException(
+					"Apenas colunas com números inteiros são ordenados.");
 		DataTable saida = TabelaVaziaComMesmaColuna();
 		DataTableRow[] rows = OrdenarLinha(FiltrarArray(), collumn);
 		for (int i = 0; i < rows.length; i++)
-		saida.insertRow(rows[i]);
+			saida.insertRow(rows[i]);
 		return saida;
 	}
-	
+
 	public DataTable sortDescending(String collumn) {
 		if (columnsTypes.get(collumn) == TYPE_STRING)
-			throw new ClassCastException("Apenas colunas com números inteiros são ordenados.");
+			throw new ClassCastException(
+					"Apenas colunas com números inteiros são ordenados.");
 		DataTable saida = TabelaVaziaComMesmaColuna();
 		DataTableRow[] rows = OrdenarLinha2(FiltrarArray(), collumn);
 		for (int i = 0; i < rows.length; i++)
-		saida.insertRow(rows[i]);
+			saida.insertRow(rows[i]);
 		return saida;
 	}
 
@@ -210,7 +174,7 @@ public class DataTable {
 		}
 		return rows;
 	}
-	
+
 	private DataTableRow[] OrdenarLinha2(DataTableRow[] rows, String collumn) {
 		for (int i = 0; i < rows.length - 1; i++) {
 			for (int k = 0; k < rows.length - 1; k++) {
