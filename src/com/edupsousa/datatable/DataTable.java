@@ -10,7 +10,7 @@ public class DataTable {
 
 	public static final int FORMAT_CSV = 0;
 	public static final int FORMAT_HTML = 1;
-	
+
 	private Interface export;
 
 	private LinkedHashMap<String, Integer> columnsTypes = new LinkedHashMap<String, Integer>();
@@ -73,14 +73,13 @@ public class DataTable {
 		return rows.get(i);
 	}
 
-		
-			public String export(int format) {
-				if (format == DataTable.FORMAT_CSV)
-					export = new FormatoCsv();
-				if (format == DataTable.FORMAT_HTML)
-					export = new FormatoHtml();
-				return export.export(this, columnsTypes);
-			}
+	public String export(int format) {
+		if (format == DataTable.FORMAT_CSV)
+			export = new FormatoCsv();
+		if (format == DataTable.FORMAT_HTML)
+			export = new FormatoHtml();
+		return export.export(this, columnsTypes);
+	}
 
 	public void insertRowAt(DataTableRow row, int index) {
 		rows.add(index, row);
@@ -88,59 +87,49 @@ public class DataTable {
 
 	public DataTable filterEqual(String collumn, Object value) {
 		DataTable dt = new DataTable();
-
-		for (String collumnName : columnsTypes.keySet()) {
+		for (String collumnName : columnsTypes.keySet())
 			dt.addCollumn(collumnName, this.getCollumnType(collumnName));
-		}
-
 		DataTableRow row;
-
 		for (int i = 0; i < this.rowsCount(); i++) {
 			row = this.getRow(i);
-			if (value == row.getValue(collumn)) {
+			if (value == row.getValue(collumn))
 				dt.insertRow(row);
-			}
 		}
-
 		return dt;
 	}
 
 	public DataTable filterNotEqual(String collumn, Object value) {
 		DataTable dt = new DataTable();
-
-		for (String collumnName : columnsTypes.keySet()) {
+		for (String collumnName : columnsTypes.keySet())
 			dt.addCollumn(collumnName, this.getCollumnType(collumnName));
-		}
-
 		DataTableRow row;
-
 		for (int i = 0; i < this.rowsCount(); i++) {
 			row = this.getRow(i);
-			if (value != row.getValue(collumn)) {
+			if (value != row.getValue(collumn))
 				dt.insertRow(row);
-			}
 		}
-
 		return dt;
 	}
 
 	public DataTable sortAscending(String collumn) {
 		if (columnsTypes.get(collumn) == TYPE_STRING)
-			throw new ClassCastException("Apenas colunas com números inteiros são ordenados.");
+			throw new ClassCastException(
+					"Apenas colunas com números inteiros são ordenados.");
 		DataTable saida = TabelaVaziaComMesmaColuna();
 		DataTableRow[] rows = OrdenarLinha(FiltrarArray(), collumn);
 		for (int i = 0; i < rows.length; i++)
-		saida.insertRow(rows[i]);
+			saida.insertRow(rows[i]);
 		return saida;
 	}
-	
+
 	public DataTable sortDescending(String collumn) {
 		if (columnsTypes.get(collumn) == TYPE_STRING)
-			throw new ClassCastException("Apenas colunas com números inteiros são ordenados.");
+			throw new ClassCastException(
+					"Apenas colunas com números inteiros são ordenados.");
 		DataTable saida = TabelaVaziaComMesmaColuna();
 		DataTableRow[] rows = OrdenarLinha2(FiltrarArray(), collumn);
 		for (int i = 0; i < rows.length; i++)
-		saida.insertRow(rows[i]);
+			saida.insertRow(rows[i]);
 		return saida;
 	}
 
@@ -173,7 +162,7 @@ public class DataTable {
 		}
 		return rows;
 	}
-	
+
 	private DataTableRow[] OrdenarLinha2(DataTableRow[] rows, String collumn) {
 		for (int i = 0; i < rows.length - 1; i++) {
 			for (int k = 0; k < rows.length - 1; k++) {

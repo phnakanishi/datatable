@@ -17,7 +17,7 @@ public class DataTableTest {
 		dt = new DataTable();
 	}
 	
-	/*
+	
 	@Test
 	public void emptyDataTable() {
 		assertEquals(0, dt.columnsCount());
@@ -89,7 +89,7 @@ public class DataTableTest {
 			assertEquals("row" + i, row.getValue("name"));
 		}
 	}
-	*/
+	
 	@Test
 	public void exportToCSV() {
 		DataTableRow row;
