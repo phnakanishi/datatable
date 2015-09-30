@@ -17,6 +17,7 @@ public class DataTableTest {
 		dt = new DataTable();
 	}
 	
+	/*
 	@Test
 	public void emptyDataTable() {
 		assertEquals(0, dt.columnsCount());
@@ -88,7 +89,7 @@ public class DataTableTest {
 			assertEquals("row" + i, row.getValue("name"));
 		}
 	}
-	
+	*/
 	@Test
 	public void exportToCSV() {
 		DataTableRow row;
@@ -104,7 +105,7 @@ public class DataTableTest {
 		String csvOutput = dt.export(DataTable.FORMAT_CSV);
 		assertEquals("id;name;\n0;\"row0\";\n1;\"row1\";\n2;\"row2\";\n", csvOutput);
 	}
-	
+
 	@Test
 	public void exportToHTML() {
 		DataTableRow row;
@@ -149,6 +150,30 @@ public class DataTableTest {
 		}
 	}
 	
+	
+	@Test
+	public void filterRowsNotEqual() {
+		DataTableRow row;
+		dt.addCollumn("id", DataTable.TYPE_INT);
+		dt.addCollumn("class", DataTable.TYPE_STRING);
+		
+		for (int i = 1; i <= 100; i++) {
+			row = dt.createRow();
+			row.setValue("id", i);
+			row.setValue("class", (i % 2 == 0 ? "even" : "odd"));
+			dt.insertRow(row);
+		}
+		
+		DataTable notfilteredTable = dt.filterNotEqual("class", "even");
+		assertEquals(50, notfilteredTable.rowsCount());
+		for (int i = 0; i < 50; i++) {
+			row = notfilteredTable.getRow(i);
+			
+			assertEquals(((i+1)*2)-1, row.getValue("id"));
+			assertEquals("odd", row.getValue("class"));
+		}
+	}
+	
 	@Test
 	public void sortRowsAscending() {
 		DataTableRow row;
@@ -170,12 +195,41 @@ public class DataTableTest {
 		}
 	}
 	
+
+	@Test
+	public void sortRowsDescending() {
+		DataTableRow row;
+		dt.addCollumn("id", DataTable.TYPE_INT);
+		dt.addCollumn("number", DataTable.TYPE_INT);
+
+		for (int i = 0; i < 5; i++) {
+			row = dt.createRow();
+			row.setValue("id", i);
+			row.setValue("number", i);
+			dt.insertRow(row);
+		}
+
+		DataTable sortedTable = dt.sortDescending("number");
+		for (int i = 0; i < 5; i++) {
+			row = sortedTable.getRow(i);
+			assertEquals(4-i, row.getValue("id"));
+			assertEquals(4-i, row.getValue("number"));						
+		}
+	}
+
 	@Test
 	public void sortRowsTypeException() {
 		dt.addCollumn("name", DataTable.TYPE_STRING);
 		
 		try {
 			dt.sortAscending("name");
+		} catch (ClassCastException e) {
+			assertEquals("Apenas colunas com números inteiros são ordenados.", e.getMessage());
+			return;
+		}
+		
+		try {
+			dt.sortDescending("name");
 		} catch (ClassCastException e) {
 			assertEquals("Only Integer columns can be sorted.", e.getMessage());
 			return;
